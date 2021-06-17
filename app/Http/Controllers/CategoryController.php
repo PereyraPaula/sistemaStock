@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -26,8 +27,20 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = Category::create($request->all());
-        return response()->json($category,200);
+        $v = \Validator::make($request->all(), [
+            'nameCategory' => 'required|string',
+        ]);
+
+        $in = $request->input('nameCategory');
+        $search = DB::table('categories')->where('nameCategory', $in)->first();
+        $rtaSearch = isset($search->nameCategory);
+
+        if ($rtaSearch == true || $v->fails()) {
+            return response()->json(['Estado' => 'Error', 'Mensaje' => 'Verifique que el rubro ya exista o que haya intrucido un valor']);
+        }else{
+            $category = Category::create($request->all());
+            return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Rubro añadido']);
+        }
     }
 
     /**
