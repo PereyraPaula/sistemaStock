@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateHeadproofsTable extends Migration
 {
@@ -31,6 +32,8 @@ class CreateHeadproofsTable extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = OFF');
         Schema::dropIfExists('headproofs');
+        DB::statement('SET FOREIGN_KEY_CHECKS = ON');
     }
 }

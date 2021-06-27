@@ -27,7 +27,6 @@ class ArticleFactory extends Factory
             'stockMinArticle'=> $this->faker->numberBetween($min = 1, $max = 1000),
             'stockMaxArticle'=> $this->faker->numberBetween($min = 1000, $max = 5000),
             'dateExpirationArt' => $this->faker->dateTimeBetween($startDate = 'now', $endDate = '+30 years', $timezone = null),
-            'category_id'=> $this->faker->numberBetween($min = 1, $max = 3)
         ];
     }
 }

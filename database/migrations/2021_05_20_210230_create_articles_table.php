@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateArticlesTable extends Migration
 {
@@ -22,7 +23,7 @@ class CreateArticlesTable extends Migration
             $table->date('dateExpirationArt');
 
             $table->bigInteger('category_id')->unsigned()->index()->nullable();
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
@@ -33,6 +34,8 @@ class CreateArticlesTable extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = OFF');
         Schema::dropIfExists('articles');
+        DB::statement('SET FOREIGN_KEY_CHECKS = ON');
     }
 }

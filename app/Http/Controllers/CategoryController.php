@@ -28,15 +28,17 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $v = \Validator::make($request->all(), [
-            'nameCategory' => 'required|string',
+            'nameCategory' => 'required',
         ]);
 
         $in = $request->input('nameCategory');
+        
         $search = DB::table('categories')->where('nameCategory', $in)->first();
         $rtaSearch = isset($search->nameCategory);
 
-        if ($rtaSearch == true || $v->fails()) {
-            return response()->json(['Estado' => 'Error', 'Mensaje' => 'Verifique que el rubro ya exista o que haya intrucido un valor']);
+        if ($rtaSearch == true || $v->fails() || is_numeric($in) == 
+        true) {
+            return response()->json(['Estado' => 'Error', 'Mensaje' => 'Verifique que el rubro ya exista o que haya introducido un valor']);
         }else{
             $category = Category::create($request->all());
             return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Rubro añadido']);
@@ -64,6 +66,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+		// Validar si lo que se está editando ya existe en otro registro
         $category->update($request->all());
         return response()->json($category,200);
     }
