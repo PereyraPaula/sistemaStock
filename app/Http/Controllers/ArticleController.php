@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
@@ -26,6 +27,7 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+
         $article= new Article;
         $article->nameArticle=$request->input('nameArticle');
         $article->priceArticle=$request->input('priceArticle');
@@ -33,6 +35,7 @@ class ArticleController extends Controller
         $article->stockMaxArticle=$request->input('stockMaxArticle');
         $article->dateExpirationArt=$request->input('dateExpirationArt');
         $article->category_id=$request->input('category_id');
+        
         $article->save();
         return $article->toJson(JSON_PRETTY_PRINT);
     }
@@ -58,7 +61,14 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $article->update($request->all());
+        $article->nameArticle=$request->input('nameArticle');
+        $article->priceArticle=$request->input('priceArticle');
+        $article->stockMinArticle=$request->input('stockMinArticle');
+        $article->stockMaxArticle=$request->input('stockMaxArticle');
+        $article->dateExpirationArt=$request->input('dateExpirationArt');
+        $article->category_id=$request->input('category_id');
+        
+        $article->save();
         return response()->json($article,200);
     }
 

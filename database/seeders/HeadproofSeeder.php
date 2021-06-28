@@ -15,8 +15,8 @@ class HeadproofSeeder extends Seeder
     public function run()
     {
         for ($i=0; $i < 10; $i++) { 
-            $start = strtotime("2021-may-23");
-            $final = strtotime("2060-dec-31");
+            $start = strtotime("1973-jan-01");
+            $final = strtotime("2021-dec-31");
             $date_format = date("y-m-d", mt_rand($start, $final));
             
             if ($i%2==0) {
