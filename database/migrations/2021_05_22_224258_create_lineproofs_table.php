@@ -22,7 +22,6 @@ class CreateLineproofsTable extends Migration
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
 
             $table->integer('quantity_movement');
-            $table->float('amount_movement');
 
             $table->unsignedBigInteger('headproof_id');
             $table->foreign('headproof_id')->references('id')->on('headproofs')->onDelete('cascade');

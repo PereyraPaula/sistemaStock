@@ -14,7 +14,6 @@ class Lineproof extends Model
     protected $fillable = [
         'article_id',
         'quantity_movement',
-        'amount_movement',
         'headproof_id'
     ];
 

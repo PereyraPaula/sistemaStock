@@ -29,7 +29,6 @@ class LineproofController extends Controller
         $lineproofs= new Lineproof;
         $lineproofs->article_id=$request->input('article_id');
         $lineproofs->quantity_movement=$request->input('quantity_movement');
-        $lineproofs->amount_movement=$request->input('amount_movement');
         $lineproofs->headproof_id=$request->input('headproof_id');
         $lineproofs->save();
         return $lineproofs->toJson(JSON_PRETTY_PRINT) ;

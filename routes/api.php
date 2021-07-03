@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LastMovementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +23,6 @@ Route::apiResource('categories','App\Http\Controllers\CategoryController');
 Route::apiResource('articles','App\Http\Controllers\ArticleController');
 Route::apiResource('headproofs','App\Http\Controllers\HeadproofController');
 Route::apiResource('lineproofs','App\Http\Controllers\LineproofController');
-Route::apiResource('lastmovements','App\Http\Controllers\LastMovementController');
+
+Route::get('lastmovements', [LastMovementController::class, 'index']);
+

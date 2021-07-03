@@ -18,7 +18,6 @@ class LineproofSeeder extends Seeder
             Lineproof::create([
                 'article_id' => rand(1,20),
                 'quantity_movement' => rand(10,500),
-                'amount_movement' => rand(1000,10000),
                 'headproof_id' => rand(1,10),
             ]);
         }
