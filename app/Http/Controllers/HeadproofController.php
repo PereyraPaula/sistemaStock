@@ -107,7 +107,31 @@ class HeadproofController extends Controller
      */
     public function destroy(Headproof $headproof)
     {
-        Headproof::destroy($headproof->id);
-        return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Cabecera del comprobante eliminado']);
+        // Headproof::destroy($headproof->id);
+        // return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Cabecera del comprobante eliminado']);
+
+        try {
+            DB::beginTransaction();
+
+            $cant_articles = DB::table('lineproofs')
+                ->join('headproofs','headproofs.id','=','lineproofs.headproof_id')
+                ->where('headproof_id', '=', $headproof->id)
+                ->get();
+
+            $cant_articles = count($cant_articles);
+            Headproof::where('id',$headproof->id)->delete();
+
+            for ($i=0; $i < $cant_articles; $i++) { 
+                Lineproof::where('headproof_id',$headproof->id)->delete();
+            }
+            
+            $cant_articles = 0;
+            DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollback();
+            return response()->json(["Message" => 'Error']);
+        }
+        
     }
 }
