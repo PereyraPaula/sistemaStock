@@ -87,6 +87,15 @@ class HeadproofController extends Controller
         }
 
     }
+
+    public function show($id)
+    {
+        $detailsReceipt = DB::table('lineproofs')
+                ->where('headproof_id', '=', $id)
+                ->get();
+        dd($detailsReceipt);
+        return $article->toJson(JSON_PRETTY_PRINT);
+    }
     
     /**
      * Remove the specified resource from storage.
