@@ -90,9 +90,12 @@ class HeadproofController extends Controller
 
     public function show($id)
     {
-        $detailsReceipt = DB::table('lineproofs')
-                ->where('headproof_id', '=', $id)
-                ->get();
+        $detailsReceipt =  DB::table('lineproofs')
+        ->join('articles','lineproofs.article_id','=','articles.id')
+        ->select('lineproofs.id','articles.nameArticle','lineproofs.headproof_id')
+        ->where('headproof_id', '=', $id)
+        ->get();
+
         return $detailsReceipt->toJson(JSON_PRETTY_PRINT);
     }
     
