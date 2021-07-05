@@ -92,7 +92,7 @@ class HeadproofController extends Controller
     {
         $detailsReceipt =  DB::table('lineproofs')
         ->join('articles','lineproofs.article_id','=','articles.id')
-        ->select('lineproofs.id','articles.nameArticle','lineproofs.headproof_id')
+        ->select('lineproofs.id','articles.nameArticle','lineproofs.quantity_movement','lineproofs.headproof_id')
         ->where('headproof_id', '=', $id)
         ->get();
 
