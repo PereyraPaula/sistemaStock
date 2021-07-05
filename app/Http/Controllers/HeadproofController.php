@@ -93,8 +93,7 @@ class HeadproofController extends Controller
         $detailsReceipt = DB::table('lineproofs')
                 ->where('headproof_id', '=', $id)
                 ->get();
-        dd($detailsReceipt);
-        return $article->toJson(JSON_PRETTY_PRINT);
+        return $detailsReceipt->toJson(JSON_PRETTY_PRINT);
     }
     
     /**
