@@ -30,20 +30,16 @@ class HeadproofController extends Controller
     public function store(Request $request)
     {
         // {
-        //     "type_movement": "Venta",
-        //     "date_movement": "2021-06-12",
+        //     "type_movement": "Compra",
+        //     "date_movement": "2021-07-29",
         //     "OrderedData": [
         //         {
-        //             "id_art": 3,
-        //             "cant_article": 10
+        //             "nameArticle": "Seamus Koelpin",
+        //             "cant_article": "10"
         //         },
         //         {
-        //             "id_art": 2,
-        //             "cant_article": 50
-        //         },
-        //         {
-        //             "id_art": 4,
-        //             "cant_article": 50
+        //             "nameArticle": "Velma Lueilwitz",
+        //             "cant_article": "20"
         //         }
         //     ]
         // }
@@ -69,17 +65,20 @@ class HeadproofController extends Controller
                 $orderedItems = $request->OrderedData;
                 $cant_articles = count($orderedItems);   
 
-                for ($i=0; $i < $cant_articles; $i++) { 
+                for ($i=0; $i < $cant_articles; $i++) 
+                { 
+                    $nameArticle  = $request->OrderedData[$i]['nameArticle'];
+                    $id_art = DB::table('articles')->where('nameArticle',$nameArticle)->first();
+                    $id_art = $id_art->id;
                     $lineproof = Lineproof::create([
                         'headproof_id' => $headproof->id,
-                        'article_id' => $request->OrderedData[$i]['id_art'],
+                        'article_id' => $id_art,
                         'quantity_movement' => $request->OrderedData[$i]['cant_article'],
                     ]);
                 }
                 
                 $cant_articles = 0;
                 DB::commit();
-
             } catch (\Exception $e) {
                 //dd($e);
                 DB::rollback();
