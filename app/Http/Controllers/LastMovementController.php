@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LastMovementController extends Controller
 {
@@ -16,9 +17,9 @@ class LastMovementController extends Controller
     {
         $lastMovements = DB::table('headproofs')
         ->join('lineproofs','lineproofs.headproof_id','=','headproofs.id')
-        ->select('headproofs.type_movement','headproofs.date_movement','lineproofs.quantity_movement','lineproofs.amount_movement')->orderBy('date_movement','desc')
+        ->select('headproofs.id','headproofs.type_movement','headproofs.date_movement','lineproofs.quantity_movement')->orderBy('date_movement','desc')
         ->get();
-        
+
         return $lastMovements->toJson(JSON_PRETTY_PRINT);
     }
 }

@@ -107,9 +107,6 @@ class HeadproofController extends Controller
      */
     public function destroy(Headproof $headproof)
     {
-        // Headproof::destroy($headproof->id);
-        // return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Cabecera del comprobante eliminado']);
-
         try {
             DB::beginTransaction();
 
@@ -128,7 +125,7 @@ class HeadproofController extends Controller
             $cant_articles = 0;
             DB::commit();
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollback();
             return response()->json(["Message" => 'Error']);
         }
