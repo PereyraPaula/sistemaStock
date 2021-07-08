@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LastMovementController;
+use App\Http\Controllers\LineproofController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +26,9 @@ Route::apiResource('headproofs','App\Http\Controllers\HeadproofController');
 Route::apiResource('lineproofs','App\Http\Controllers\LineproofController');
 
 Route::get('lastmovements', [LastMovementController::class, 'index']);
+Route::get('inventory', [LineproofController::class, 'inventory']);
+
 Route::get('betweenDates/{startDate}/{endDate}', [function ($startDate,$endDate) {
-    
     $betweenDates = DB::table('headproofs')
        ->join('lineproofs','lineproofs.headproof_id','=','headproofs.id')
        ->select('headproofs.id','headproofs.type_movement','headproofs.date_movement','lineproofs.quantity_movement')->orderBy('date_movement','desc')
@@ -35,5 +37,3 @@ Route::get('betweenDates/{startDate}/{endDate}', [function ($startDate,$endDate)
 
     return $betweenDates->toJson(JSON_PRETTY_PRINT);
 }]);
-
-

@@ -4,70 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Lineproof;
+use Illuminate\Support\Facades\DB;
 
 class LineproofController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {   
-        $lineproofs = Lineproof::all();
-        return $lineproofs->toJson(JSON_PRETTY_PRINT);   
-    }
+    public function inventory(){
+        $articles_id = DB::table('articles')->select('articles.id')->orderBy('articles.id','asc')->get();
+        $cantForArticle = array();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $lineproofs= new Lineproof;
-        $lineproofs->article_id=$request->input('article_id');
-        $lineproofs->quantity_movement=$request->input('quantity_movement');
-        $lineproofs->headproof_id=$request->input('headproof_id');
-        $lineproofs->save();
-        return $lineproofs->toJson(JSON_PRETTY_PRINT) ;
-    }
+        $cantArticles = count($articles_id);
+        for ($i=0; $i < $cantArticles; $i++) {
+            $articleNow = DB::table('lineproofs')
+            ->join('headproofs','headproofs.id','=','lineproofs.headproof_id')
+            ->select('lineproofs.id','lineproofs.article_id','lineproofs.quantity_movement','headproofs.type_movement')
+            ->where('lineproofs.article_id', '=', $articles_id[$i]->id)
+            ->get();
+            
+            $cantOperations = count($articleNow);
+            $cantArticleNow = 0;
+        
+            for ($j=0; $j < $cantOperations; $j++) {
+                if ($articleNow[$j]->type_movement == 'Compra') {
+                    $cantArticleNow = $cantArticleNow + $articleNow[$j]->quantity_movement;
+                }else{
+                    $cantArticleNow = $cantArticleNow - $articleNow[$j]->quantity_movement;
+                }
+            }
+            $cantForArticle[$i] = $cantArticleNow;
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $lineproofs = Lineproof::find($id);
-        return $lineproofs->toJson(JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Lineproof $lineproof)
-    {
-        $lineproof->update($request->all());
-        return response()->json($lineproof,200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Lineproof $lineproof)
-    {
-        Lineproof::destroy($lineproof->id);
-        return response()->json(['Estado' => 'Satisfactorio', 'Mensaje' => 'Artículo eliminado']);
+        return $cantForArticle;
     }
 }
