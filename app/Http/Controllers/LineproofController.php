@@ -32,7 +32,24 @@ class LineproofController extends Controller
             }
             $cantForArticle[$i] = $cantArticleNow;
         }
+        
+        $sql = DB::table('categories')
+        ->join('articles','articles.category_id','=','categories.id')
+        ->select('categories.id','articles.nameArticle','categories.nameCategory','articles.priceArticle')->orderBy('articles.id','asc')
+        ->get();
 
-        return $cantForArticle;
+        // En cada artículo agrega una propiedad que indica la cantidad actual de cada artículo
+        for ($i=0; $i < $cantArticles; $i++) { 
+            $props = 'cantForArticle';
+            $sql[$i]->{$props} = $cantForArticle[$i];
+        }
+
+        // En cada artículo agrega una propiedad que indica el precio total que se tiene de cada artículo
+        for ($i=0; $i < $cantArticles; $i++) { 
+            $props = 'total';
+            $sql[$i]->{$props} = $cantForArticle[$i] * $sql[$i]->priceArticle;
+        }
+
+        return $sql;
     }
 }
