@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 class LineproofController extends Controller
 {
     public function inventory(){
-        $articles_id = DB::table('articles')->select('articles.id')->orderBy('articles.id','asc')->get();
+        $articles = DB::table('articles')->select('articles.id','articles.stockMinArticle')->orderBy('articles.id','asc')->get();
         $cantForArticle = array();
 
-        $cantArticles = count($articles_id);
+        $cantArticles = count($articles);
         for ($i=0; $i < $cantArticles; $i++) {
             $articleNow = DB::table('lineproofs')
             ->join('headproofs','headproofs.id','=','lineproofs.headproof_id')
             ->select('lineproofs.id','lineproofs.article_id','lineproofs.quantity_movement','headproofs.type_movement')
-            ->where('lineproofs.article_id', '=', $articles_id[$i]->id)
+            ->where('lineproofs.article_id', '=', $articles[$i]->id)
             ->get();
             
             $cantOperations = count($articleNow);
@@ -33,6 +33,7 @@ class LineproofController extends Controller
             $cantForArticle[$i] = $cantArticleNow;
         }
         
+        // Tabla que se mostrará en el request
         $sql = DB::table('categories')
         ->join('articles','articles.category_id','=','categories.id')
         ->select('categories.id','articles.nameArticle','categories.nameCategory','articles.priceArticle')->orderBy('articles.id','asc')
@@ -48,6 +49,14 @@ class LineproofController extends Controller
         for ($i=0; $i < $cantArticles; $i++) { 
             $props = 'total';
             $sql[$i]->{$props} = $cantForArticle[$i] * $sql[$i]->priceArticle;
+        }
+
+        // Detecta cuales articulos tienen menos stock actualmente del minimo de c/u
+        for ($i=0; $i < $cantArticles; $i++) {
+            $props = 'littleStock';
+            if ($sql[$i]->cantForArticle <= $articles[$i]->stockMinArticle) {
+                $sql[$i]->{$props} = true;
+            }
         }
 
         return $sql;
