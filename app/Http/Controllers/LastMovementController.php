@@ -21,7 +21,7 @@ class LastMovementController extends Controller
         $movements = DB::table('headproofs')
         ->join('lineproofs','lineproofs.headproof_id','=','headproofs.id')
         ->select('headproofs.id','headproofs.type_movement','headproofs.date_movement','lineproofs.quantity_movement')->orderBy('date_movement','desc')
-        ->paginate(5);
+        ->paginate($maxPage);
 
         return [
             "pagination"=>[

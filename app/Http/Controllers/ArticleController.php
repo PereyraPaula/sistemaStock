@@ -13,10 +13,21 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::all();
-        return $articles->toJson(JSON_PRETTY_PRINT);
+        $maxPage = 5;
+        $articles = DB::table('articles')->paginate($maxPage);
+        return [
+            "pagination"=>[
+                'total' => $articles->total(),
+                'current_page' => $articles->currentPage(),
+                'per_page' => $articles->perPage(),
+                'last_page' => $articles->lastPage(),
+                'from' => $articles->firstItem(),
+                'to' => $articles->lastPage(),
+            ],
+            "articles" => $articles
+        ];
     }
 
     /**
@@ -35,7 +46,7 @@ class ArticleController extends Controller
         $article->stockMaxArticle=$request->input('stockMaxArticle');
         $article->dateExpirationArt=$request->input('dateExpirationArt');
         $article->category_id=$request->input('category_id');
-        
+
         $article->save();
         return $article->toJson(JSON_PRETTY_PRINT);
     }
@@ -67,7 +78,7 @@ class ArticleController extends Controller
         $article->stockMaxArticle=$request->input('stockMaxArticle');
         $article->dateExpirationArt=$request->input('dateExpirationArt');
         $article->category_id=$request->input('category_id');
-        
+
         $article->save();
         return response()->json($article,200);
     }

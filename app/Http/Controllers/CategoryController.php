@@ -15,8 +15,32 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::all();
-        return $category->toJson(JSON_PRETTY_PRINT);
+        $maxPage = 5;
+        $categories = DB::table('categories')->paginate($maxPage);
+        return [
+            "pagination"=>[
+                'total' => $categories->total(),
+                'current_page' => $categories->currentPage(),
+                'per_page' => $categories->perPage(),
+                'last_page' => $categories->lastPage(),
+                'from' => $categories->firstItem(),
+                'to' => $categories->lastPage(),
+            ],
+            "categories" => $categories
+        ];
+    }
+
+    public function allNameCategories(){
+      return json_encode(DB::table('categories')->select('categories.id','categories.nameCategory')->get());
+    }
+
+    public function searchByNameCategory($name){
+      $result = DB::table('categories')->select('categories.id')->where('nameCategory', $name)->get();
+      if (!$result->count()) {
+        return 'No existe '.$name.' como nombre de categoría.';
+      }else{
+        return $result[0]->id;
+      }
     }
 
     /**
@@ -32,11 +56,11 @@ class CategoryController extends Controller
         ]);
 
         $in = $request->input('nameCategory');
-        
+
         $search = DB::table('categories')->where('nameCategory', $in)->first();
         $rtaSearch = isset($search->nameCategory);
 
-        if ($rtaSearch == true || $v->fails() || is_numeric($in) == 
+        if ($rtaSearch == true || $v->fails() || is_numeric($in) ==
         true) {
             return response()->json(['Estado' => 'Error', 'Mensaje' => 'Verifique que el rubro ya exista o que haya introducido un valor']);
         }else{

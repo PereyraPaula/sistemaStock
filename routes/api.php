@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LastMovementController;
 use App\Http\Controllers\LineproofController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('categories','App\Http\Controllers\CategoryController');
+Route::get('categoriesAll',[CategoryController::class, 'allNameCategories']);
+Route::get('categoriaIdByName/{name}', [CategoryController::class, 'searchByNameCategory']);
+
 Route::apiResource('articles','App\Http\Controllers\ArticleController');
 Route::apiResource('headproofs','App\Http\Controllers\HeadproofController');
 Route::apiResource('lineproofs','App\Http\Controllers\LineproofController');
