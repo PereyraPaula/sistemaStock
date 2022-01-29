@@ -20,6 +20,7 @@ class CreateHeadproofsTable extends Migration
             $table->id();
             $table->enum('type_movement', ['Compra', 'Venta']);
             $table->date('date_movement');
+            $table->boolean('open')->default(false);
 
             $table->timestamps();
         });

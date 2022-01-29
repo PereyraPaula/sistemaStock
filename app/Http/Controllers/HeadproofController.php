@@ -17,8 +17,20 @@ class HeadproofController extends Controller
      */
     public function index()
     {
-        $headproof = Headproof::all();
-        return $headproof->toJson(JSON_PRETTY_PRINT);
+        $maxPage = 5;
+        $headproof = DB::table('headproofs')->paginate($maxPage);
+        //return $headproof->toJson(JSON_PRETTY_PRINT);
+        return [
+            "pagination"=>[
+                'total' => $headproof->total(),
+                'current_page' => $headproof->currentPage(),
+                'per_page' => $headproof->perPage(),
+                'last_page' => $headproof->lastPage(),
+                'from' => $headproof->firstItem(),
+                'to' => $headproof->lastPage(),
+            ],
+            "headproof" => $headproof
+        ];
     }
 
     /**
@@ -58,15 +70,16 @@ class HeadproofController extends Controller
                 $headproof = Headproof::create([
                     "type_movement" => $request->input('type_movement'),
                     "date_movement" => $request->input('date_movement'),
+                    "open" => false,
                 ]);
 
                 //dd($headproof->toJson(JSON_PRETTY_PRINT));
 
                 $orderedItems = $request->OrderedData;
-                $cant_articles = count($orderedItems);   
+                $cant_articles = count($orderedItems);
 
-                for ($i=0; $i < $cant_articles; $i++) 
-                { 
+                for ($i=0; $i < $cant_articles; $i++)
+                {
                     $nameArticle  = $request->OrderedData[$i]['nameArticle'];
                     $id_art = DB::table('articles')->where('nameArticle',$nameArticle)->first();
                     $id_art = $id_art->id;
@@ -76,7 +89,7 @@ class HeadproofController extends Controller
                         'quantity_movement' => $request->OrderedData[$i]['cant_article'],
                     ]);
                 }
-                
+
                 $cant_articles = 0;
                 DB::commit();
             } catch (\Exception $e) {
@@ -98,7 +111,7 @@ class HeadproofController extends Controller
 
         return $detailsReceipt->toJson(JSON_PRETTY_PRINT);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -118,10 +131,10 @@ class HeadproofController extends Controller
             $cant_articles = count($cant_articles);
             Headproof::where('id',$headproof->id)->delete();
 
-            for ($i=0; $i < $cant_articles; $i++) { 
+            for ($i=0; $i < $cant_articles; $i++) {
                 Lineproof::where('headproof_id',$headproof->id)->delete();
             }
-            
+
             $cant_articles = 0;
             DB::commit();
         } catch (\Exception $e) {
@@ -129,6 +142,6 @@ class HeadproofController extends Controller
             DB::rollback();
             return response()->json(["Message" => 'Error']);
         }
-        
+
     }
 }
